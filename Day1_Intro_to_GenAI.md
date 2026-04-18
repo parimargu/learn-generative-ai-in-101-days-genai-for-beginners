@@ -32,12 +32,12 @@ The current "GenAI Boom" is powered by massive models trained on nearly all the 
 ```mermaid
 graph LR
     subgraph "Discriminative AI (The Judge)"
-    D_Input[Input Data] --> D_Model{Model}
+    D_Input[Input Data] --> D_Model{AI Model}
     D_Model --> D_Label[Probability/Label: 'Dog']
     end
 
     subgraph "Generative AI (The Creator)"
-    G_Input[Prompt/Seed] --> G_Model{Model}
+    G_Input[Prompt/Seed] --> G_Model{AI Model}
     G_Model --> G_Output[New Content: 'Image of a Dog']
     end
 
