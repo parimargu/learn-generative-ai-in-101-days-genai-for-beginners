@@ -47,27 +47,38 @@ graph LR
 
 ### Diagram 2: Key Players & Flagship Models
 ```mermaid
-mindmap
-  root((GenAI Giants))
-    OpenAI
-      :::urgent
-      ChatGPT
-      DALL-E
-      Sora
-    Google
-      :::note
-      Gemini
-      Imagen
-      MusicLM
-    Meta
-      :::info
-      Llama 3
-      Segment Anything
-      AudioCraft
+graph TD
+    Root((GenAI Giants))
+    
+    %% OpenAI Branch
+    Root --- OpenAI[OpenAI]
+    OpenAI --- ChatGPT[ChatGPT]
+    OpenAI --- DALL-E[DALL-E]
+    OpenAI --- Sora[Sora]
+    
+    %% Google Branch
+    Root --- Google[Google]
+    Google --- Gemini[Gemini]
+    Google --- Imagen[Imagen]
+    Google --- MusicLM[MusicLM]
+    
+    %% Meta Branch
+    Root --- Meta[Meta]
+    Meta --- Llama3[Llama 3]
+    Meta --- SegAny[Segment Anything]
+    Meta --- AudioCraft[AudioCraft]
 
-    classDef urgent fill:#ff9,stroke:#333,stroke-width:2px;
-    classDef note fill:#9f9,stroke:#333,stroke-width:2px;
-    classDef info fill:#99f,stroke:#333,stroke-width:2px;
+    %% Class Definitions for Colors
+    classDef rootStyle fill:#00f,color:#fff,stroke:#333,stroke-width:4px,font-size:20px;
+    classDef openAI fill:#ff9,stroke:#333,stroke-width:2px;
+    classDef google fill:#9f9,stroke:#333,stroke-width:2px;
+    classDef meta fill:#c9f,stroke:#333,stroke-width:2px;
+
+    %% Applying Classes
+    class Root rootStyle
+    class OpenAI,ChatGPT,DALL-E,Sora openAI
+    class Google,Gemini,Imagen,MusicLM google
+    class Meta,Llama3,SegAny,AudioCraft meta
 ```
 
 ### Diagram 3: Simple GenAI Workflow
