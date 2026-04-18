@@ -5,10 +5,13 @@
 *   **Generative AI (GenAI)**: A branch of Artificial Intelligence focused on creating new, original content (text, images, audio, video, etc.) from existing data patterns, rather than just analyzing or classifying it.
 *   **Discriminative Models**: AI models designed to classify data or predict labels (e.g., "Is this a picture of a cat or a dog?"). They learn the boundary between classes.
 *   **Generative Models**: AI models designed to understand the underlying structure of data to generate new examples (e.g., "Draw me a completely new picture of a cat.").
+*   **Tokens**: The individual units of text (like words or sub-words) that an AI model processes. For example, the word "playing" may be split into "play" and "ing" as two tokens.
+*   **Context Window**: The maximum amount of text (measured in tokens) that a model can "remember" or process in a single conversation or request.
 *   **Key Players**:
     *   **OpenAI**: Creator of ChatGPT and DALL-E.
     *   **Google (DeepMind)**: Creator of Gemini and PaLM.
     *   **Meta (AI Research)**: Creator of the Llama family of open-source models.
+    *   **Anthropic**: Creator of Claude, known for safety-focused AI research.
 
 ## 2. Layman's Analogy
 
@@ -53,7 +56,7 @@ graph TD
     %% OpenAI Branch
     Root --- OpenAI[OpenAI]
     OpenAI --- ChatGPT[ChatGPT]
-    OpenAI --- DALL-E[DALL-E]
+    OpenAI --- DALL_E[DALL-E]
     OpenAI --- Sora[Sora]
     
     %% Google Branch
@@ -68,17 +71,24 @@ graph TD
     Meta --- SegAny[Segment Anything]
     Meta --- AudioCraft[AudioCraft]
 
+    %% Anthropic Branch
+    Root --- Anthropic[Anthropic]
+    Anthropic --- Claude[Claude]
+    Anthropic --- Claude_Code[Claude Code]
+
     %% Class Definitions for Colors
     classDef rootStyle fill:#00f,color:#fff,stroke:#333,stroke-width:4px,font-size:20px;
     classDef openAI fill:#ff9,stroke:#333,stroke-width:2px;
     classDef google fill:#9f9,stroke:#333,stroke-width:2px;
     classDef meta fill:#c9f,stroke:#333,stroke-width:2px;
+    classDef anthropic fill:#f9c,stroke:#333,stroke-width:2px;
 
     %% Applying Classes
     class Root rootStyle
-    class OpenAI,ChatGPT,DALL-E,Sora openAI
+    class OpenAI,ChatGPT,DALL_E,Sora openAI
     class Google,Gemini,Imagen,MusicLM google
     class Meta,Llama3,SegAny,AudioCraft meta
+    class Anthropic,Claude,Claude_Code anthropic
 ```
 
 ### Diagram 3: Simple GenAI Workflow
@@ -89,7 +99,9 @@ sequenceDiagram
     participant Knowledge_Base
 
     User->>AI_Model: Sends Prompt ("Write a poem about space")
-    Note over AI_Model: Analyzes patterns in 'Knowledge_Base'
+    AI_Model->>Knowledge_Base: Queries learned patterns
+    Knowledge_Base-->>AI_Model: Returns relevant patterns
+    Note over AI_Model: Analyzes patterns and predicts next tokens
     AI_Model->>User: Generates New Text (Poem)
     
     rect rgb(240, 240, 240)
@@ -102,9 +114,11 @@ sequenceDiagram
 graph TD
     A[Traditional AI: Rule-Based] -->|Evolution| B[Machine Learning: Pattern Recognition]
     B -->|Evolution| C[Deep Learning: Neural Networks]
-    C -->|Current State| D[Generative AI: Content Creation]
+    C -->|Breakthrough 2017| T[Transformer Architecture]
+    T -->|Current State| D[Generative AI: Content Creation]
 
     style D fill:#f0f,stroke:#333,stroke-width:6px,color:#fff,font-size:22px
+    style T fill:#09f,stroke:#333,stroke-width:4px,color:#fff,font-size:16px
 ```
 
 ## 5. Code Playground
@@ -116,7 +130,7 @@ from openai import OpenAI
 client = OpenAI(api_key="your_key")
 
 response = client.chat.completions.create(
-  model="gpt-3.5-turbo",
+  model="gpt-4o-mini",
   messages=[{"role": "user", "content": "Define Generative AI in one sentence."}]
 )
 print(f"OpenAI says: {response.choices[0].message.content}")
@@ -124,12 +138,14 @@ print(f"OpenAI says: {response.choices[0].message.content}")
 
 ### Example 2: Google Gemini (The Multi-modal Powerhouse)
 ```python
-import google.generativeai as genai
+from google import genai
 
-genai.configure(api_key="your_key")
-model = genai.GenerativeModel('gemini-1.5-flash')
+client = genai.Client(api_key="your_key")
 
-response = model.generate_content("What is the difference between Generative and Discriminative AI?")
+response = client.models.generate_content(
+    model="gemini-2.0-flash",
+    contents="What is the difference between Generative and Discriminative AI?"
+)
 print(f"Gemini says: {response.text}")
 ```
 
@@ -140,7 +156,7 @@ from groq import Groq
 client = Groq(api_key="your_key")
 
 completion = client.chat.completions.create(
-    model="llama3-8b-8192",
+    model="llama-3.1-8b-instant",
     messages=[{"role": "user", "content": "Who are the top 3 players in GenAI?"}]
 )
 print(f"Groq/Llama says: {completion.choices[0].message.content}")
@@ -178,6 +194,20 @@ response = requests.post(url, json=data)
 print(f"Local Ollama says: {response.json()['response']}")
 ```
 
+### Example 6: Anthropic Claude (The Safety-Focused Powerhouse)
+```python
+import anthropic
+
+client = anthropic.Anthropic(api_key="your_key")
+
+message = client.messages.create(
+    model="claude-opus-4-5",
+    max_tokens=1024,
+    messages=[{"role": "user", "content": "Define Generative AI in one sentence."}]
+)
+print(f"Claude says: {message.content[0].text}")
+```
+
 ## 6. Lab Exercises
 
 1.  **The Prompt Test**: Compare the output of ChatGPT (OpenAI) and Gemini (Google) for the same prompt: "Explain a black hole to a toddler." Note the differences in tone and detail.
@@ -189,10 +219,10 @@ print(f"Local Ollama says: {response.json()['response']}")
 ## 7. POC Ideas
 
 1.  **AI Name Generator**: A simple Python script that uses Gemini to generate creative names for a new startup based on user keywords.
-2.  **The "AI Critic" Bot**: Use a Discriminative approach (sentiment analysis) to tell if a movie review is positive, then use a Generative approach to rewrite a negative review into a positive one.
+2.  **The "AI Critic" Bot**: Use a Discriminative approach (sentiment analysis — a classification task) to tell if a movie review is positive, then use a Generative approach to rewrite a negative review into a positive one.
 3.  **Local Privacy Chat**: Build a simple local Streamlit UI that connects to Ollama, ensuring no data ever leaves your computer.
 4.  **Multi-Model Comparison Dashboard**: A small app that sends one prompt to Groq, OpenAI, and Gemini simultaneously and displays their answers side-by-side for comparison.
-5.  **GenAI History Timeline**: A website that uses an LLM to generate a timeline of key GenAI milestones and renders it using a JS library.
+5.  **GenAI History Timeline**: A website that uses an LLM to generate a timeline of key GenAI milestones and renders it using a JS library. *(Note: Always fact-check LLM-generated historical dates against reliable sources.)*
 
 ## 8. Knowledge Check
 
@@ -233,4 +263,4 @@ print(f"Local Ollama says: {response.json()['response']}")
 
 Generative AI is a revolutionary type of Artificial Intelligence that moves beyond simply recognizing patterns to actually creating brand-new things. Whether it's writing an essay, creating an image, or composing music, GenAI uses its vast "knowledge" of existing data to find the most likely and creative ways to build something original.
 
-Think of it as the difference between a student who can only pass multiple-choice tests (Traditional/Discriminative AI) and a student who can write a creative essay (Generative AI). Today, we are seeing giant companies like OpenAI, Google, and Meta compete to build the smartest and most creative "students" the world has ever seen.
+Think of it as the difference between a student who can only pass multiple-choice tests (Traditional/Discriminative AI) and a student who can write a creative essay (Generative AI). Today, we are seeing giant companies like OpenAI, Google, Meta, and Anthropic compete to build the smartest and most creative "students" the world has ever seen.
